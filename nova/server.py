@@ -4,8 +4,20 @@ import novaclient.v1_1.client as nvclient
 #import novaclient.v3.client as nvclient
 import json
 import csv
+import collections
 # Read from the env vars
 # TODO parse arguments in command line
+
+
+class Foo(object):
+    def __init__(self):
+        self.name = 1
+        self.uuid = 2
+	self.volumens = {}
+    
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
 def get_nova_credentials( sType):
     cred = {}
     cred['username']   = os.environ['OS_USERNAME']
@@ -38,23 +50,22 @@ def main():
     for server in nc.servers.list():
 	#print "VM id= {}, name = {}".format(server.id,server.name)
         attach = ""
+	volumensData = []
 	for volume in nc.volumes.get_server_volumes(server.id):
-		#print "Volume ->", repr(volume.volumeId)
-		print volume.id
-		attach = volume.id + "," + attach
-		#print volume.human_id
-		#print "Volume get->", repr(nc.voluddmes.get("31446692-49dd-4985-ab3c-add26ad83a44"))
-		#print "Volume get->", repr(volume.id)
-		#print "Tamano :", repr(volume.size)
+		volumensData.append(volume.id)
 	
-	print "VM id= {}, name = {}, attach = {}".format(server.id,server.name,attach)
-     	data = {}
-	data['uuid'] = server.id
-	data['name'] = server.name
-	json_data = json.dumps(data)
-	print json_data
-	write(json_data)
-     
+	#print "VM id= {}, name = {}, attach = {}".format(server.id,server.name,attach)
+	data = []
+	data.append("casa")
+	data.append("casa2")
+	json = Foo()
+	json.name = server.name
+	json.uuid = server.id
+	json.volumens = volumensData
+        print json.volumens
+	print json.to_json()
+#	exit()
+
 #    for flavor in nc.flavors.list():
 #	print flavor
 #	repr(flavor)
