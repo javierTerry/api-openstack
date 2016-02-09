@@ -1,10 +1,12 @@
 import os
-
-import novaclient.v1_1.client as nvclient
+import sys
+import novaclient.v2.client as nvclient
+#import novaclient.exceptions.Unauthorized
 #import novaclient.v3.client as nvclient
 import json
 import csv
 import collections
+
 # Read from the env vars
 # TODO parse arguments in command line
 
@@ -23,13 +25,45 @@ def get_nova_credentials( sType):
     cred['username']   = os.environ['OS_USERNAME']
     cred['api_key']    = os.environ['OS_PASSWORD']
     cred['auth_url']   = os.environ['OS_AUTH_URL']
-    cred['project_id'] = "IMSS-1"#os.environ['OS_PROJECT_NAME']# "IMSS-1" #"UNETE_Op-07678" #"SORIANA_Op-08151"#os.environ['OS_TENANT_NAME']
+    #cred['project_id'] = "Corte Ingles"#os.environ['OS_PROJECT_NAME']# "IMSS-1" #"UNETE_Op-07678" #"SORIANA_Op-08151"#os.environ['OS_TENANT_NAME']
     #cred['service_type'] = "volume"
     return cred
 
+
+def nova_list_show(params):
+	credentials = get_nova_credentials("")
+	#print params
+	cr = credentials.update(params)
+	#print dir(credentials)
+	#print type(cr)
+	#print credentials
+    	print "nova list"
+	print credentials
+	try:
+	    	nc = nvclient.Client(**credentials)
+		for server in nc.servers.list():
+        		print "VM id= {}, name = {}".format(server.id,server.name)
+	except:
+    		print "Unexpected error:", sys.exc_info()[0]
+    		#raise
+	
+def nova_list(params):
+        credentials = get_nova_credentials("")
+        try:
+		cr = credentials.update(params)
+        	nc = nvclient.Client(**credentials)
+        	return nc.servers.list()
+        except:
+                print "Unexpected error:", sys.exc_info()[0]
+                #raise
+
 def main():
     credentials = get_nova_credentials("")
-    print credentials
+    print "main {}".format(credentials)
+    nova_list(credentials)
+    print "fin nova main"
+    exit()
+    #print credentials
     nc = nvclient.Client(**credentials)
     #exit();
     #for volume in nc.volumes.list():
@@ -48,7 +82,7 @@ def main():
 
     
     for server in nc.servers.list():
-	#print "VM id= {}, name = {}".format(server.id,server.name)
+	print "VM id= {}, name = {}".format(server.id,server.name)
         attach = ""
 	volumensData = []
 	for volume in nc.volumes.get_server_volumes(server.id):
@@ -88,4 +122,7 @@ def write(cadena):
 
 
 if __name__ == '__main__':
-    main()
+    	cred = {}
+	cred['project_id'] = "Corte Ingles"
+	nova_list(cred)
+
