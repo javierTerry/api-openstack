@@ -11,6 +11,10 @@ cred = cr.get_credentials()
 cred['auth_url'] = "http://vrrp:35357/v2.0"
 #print credi
 
+def test():
+	keystone = ksclient.Client(**cred)
+	print dir(keystone.tenants.get("Habers-Op18750"))
+
 def tenant_list_show():
 	keystone = ksclient.Client(**cred)
 	for tenant in keystone.tenants.list():
@@ -30,6 +34,8 @@ def tenant_list():
         tenants = keystone.tenants.list()
 	return tenants
 
+
 if __name__ == "__main__":
-	tenant_list_show()
+	test()
+	#tenant_list_show()
 

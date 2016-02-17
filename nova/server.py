@@ -24,7 +24,7 @@ def get_nova_credentials( sType):
     cred = {}
     cred['username']   = os.environ['OS_USERNAME']
     cred['api_key']    = os.environ['OS_PASSWORD']
-    cred['auth_url']   = os.environ['OS_AUTH_URL']
+    cred['auth_url']   = "http://vrrp:35357/v2.0"#os.environ['OS_AUTH_URL']
     #cred['project_id'] = "Corte Ingles"#os.environ['OS_PROJECT_NAME']# "IMSS-1" #"UNETE_Op-07678" #"SORIANA_Op-08151"#os.environ['OS_TENANT_NAME']
     #cred['service_type'] = "volume"
     return cred
@@ -124,5 +124,5 @@ def write(cadena):
 if __name__ == '__main__':
     	cred = {}
 	cred['project_id'] = "Corte Ingles"
-	nova_list(cred)
+	nova_list_show(cred)
 
