@@ -72,7 +72,8 @@ class Server():
 			try:
 					#nc = nvclient.Client(**self.credGlobal)
 					for server in self.nova.servers.list():
-						print "VM id= {}, name = {}".format(server.id,server.name)
+						print dir(server)
+						print "VM id= {}, name = {}, status= {}".format(server.id,server.name, server.status)
 			except:
 					print "Unexpected error:", sys.exc_info()[0]
 					raise

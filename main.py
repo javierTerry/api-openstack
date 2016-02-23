@@ -40,22 +40,24 @@ for tenant in tenants:
 			if flavorDetails != None:
 				sFlavor =  "{},{},{},{}".format(flavorDetails.name, flavorDetails.ram,flavorDetails.vcpus, flavorDetails.disk)
 			sVolume = ",,"
-			#for vol in volume.list_server(vm.id):
-			#	#sVolume = "{},{},{}".format(volume.size, volume.name, volume.id)
-			#	volDetail = volume.details(vol.id)
-			#	sVolume = ",,"
-			#	if volDetail != None:
-			#		sVolume = "{},{},{}".format(volDetail.name, volDetail.size, volDetail.id)
+			sVolId = ""
+			for vol in volume.list_server(vm.id):
+				sVolId = "{}|{}".format(vol.id, sVolId)
+				print "Volume id {}".format(vm.id)
+				volDetail = volume.details(vol.id)
+				#sVolume = ",,"
+				#if volDetail != None:
+				#	sVolume = "{},{},{}".format(volDetail.name, volDetail.size, volDetail.id)
 				#print sVolume
 				
-			sCsv = "{},{},{},{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.csvCadena(tenant.description),vm.name,vm.id,sFlavor,sVolume)
+			sCsv = "{},{},{},{},{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.csvCadena(tenant.description),vm.name,vm.id,vm.status,sFlavor,sVolId)
 			print sCsv
 			noVms += 1
 	except:
 		#exit()
 		#raise
 		noVms += 1
-		print "{} -> Unexpected error: {}".format(__file__,sys.exc_info())
+		#print "{} -> Unexpected error: {}".format(__file__,sys.exc_info())
 	#for server in servers:
 	#	print "{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.utf8(tenant.description),server.name)	
 	

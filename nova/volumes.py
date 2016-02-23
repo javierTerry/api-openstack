@@ -8,24 +8,33 @@ import os, sys
 
 class Volume():
 	credGlobal = {}
-	
+	credService = {}
+	nova = ""
+	novaService = ""
 
 	def __init__(self):
 		self.get_nova_credentials()
+		self.nova = nvclient.Client(**self.credGlobal)
+		self.novaService = nvclient.Client(**self.credService)
 	
 	def get_nova_credentials(self):
     		cred = {}
     		cred['username']   = os.environ['OS_USERNAME']
     		cred['api_key']    = os.environ['OS_PASSWORD']
-    		cred['auth_url']   = os.environ['OS_AUTH_URL']
+    		cred['auth_url']   = "http://vrrp:35357/v2.0"#os.environ['OS_AUTH_URL']
     		#cred['service_type'] = "volume"
+		cred['project_id'] = "admin"
     		self.credGlobal = cred
+		cred['service_type'] = "volume"
+		self.credService = cred
+		
 
 	def update_params_credentials(self,params):
 		self.get_nova_credentials()
 		#print self.credGlobal
 		#print params
 		self.credGlobal.update(params)
+		self.nova = nvclient.Client(**self.credGlobal)
 		#print self.credGlobal# =  cred
 		#print cred
 		#print "update {}".format(self.credGlobal)
@@ -76,21 +85,10 @@ class Volume():
 		#print "credencials volume"
 		print self.credGlobal
         	try:
-                	nc = nvclient.Client(**self.credGlobal)
-			#print dir(nc.volumes.get('d1adaa79-776f-456b-8543-833744d0d282'))
-			#exit()
-			#for volume in nc.volumes.get_server_volumes(ui):
-			#	print (volume.to_dict())
-			#exit()
-			#return nc.volumes.get_server_volumes(serverUuid)
-			#for server in nc.servers.list():
-        		#	print "VM id= {}, name = {}".format(server.id,server.name)
-        		#	attach = ""
-        		#	volumensData = []
-        		for volume in nc.volumes.get_server_volumes(serverUuid):
-                		#volumensData.append(volume.id)
+        		for volume in self.nova.volumes.get_server_volumes(serverUuid):
 				print volume.id
-				#print (nc.volumes.get_server_volumes('e6149112-9ec6-426d-be36-83a880c1430e'))
+				details =  self.details(volume.id)
+				print "name = {}, size = {} GB, volume uuid = {}".format(details.name, details.size, details.id)
 		
 			#print "fin TEst"
 			#exit()
@@ -101,22 +99,19 @@ class Volume():
 
 	def list_server(self, serverUuid):
         	try:
-			nc = nvclient.Client(**self.credGlobal)
-			return nc.volumes.get_server_volumes(serverUuid)
+			return self.nova.volumes.get_server_volumes(serverUuid)
 		except:
-			print "{} -> Unexpected error: {}".format(__file__, sys.exc_info()[0])
+			#print "{} -> Unexpected error: {}".format(__file__, sys.exc_info()[0])
 			#raise
+			"debug"
 
 
 	def details(self,volumeId):
 		try:
-			cred = {}
-			cred['service_type'] = "volume"
-			cred.update(self.credGlobal)
-			nc = nvclient.Client(**cred)
-                	#print dir(nc.volumes.get(volumeId))
-			return nc.volumes.get(volumeId)
-                	#exit()
+			#cred = {}
+			#cred['service_type'] = "volume"
+			#self.update_params_credentials(cred)
+			return self.nova.volumes.get(volumeId)
 		except:
                         print "{} -> Unexpected error: {}".format(__file__, sys.exc_info()[0])
                         #raise
@@ -126,7 +121,7 @@ class Volume():
 
 if __name__ == '__main__':
         cred = {}
-        cred['project_id'] = "Corte Ingles"
+        #cred['project_id'] = "Corte Ingles"
 	#cred['service_type'] = "volume"
         volume = Volume()
 	volume.update_params_credentials(cred)
@@ -134,9 +129,12 @@ if __name__ == '__main__':
 	#volume.nova_list_show()
 	#get(cred)
 	#Volume().update_params_credentials(cred)
-	ui = "e6149112-9ec6-426d-be36-83a880c1430e"
+	ui = "12d95c5e-759c-42da-8887-112dc54d65ce"
+	#ui = "add9bc78-88d6-4f9d-85ff-2f4532a4c120"
+	#ui = "ca67690f-e5f8-4bcf-9c39-16367962a67b"
 	#volume.list_server_show(ui)
-	volume.list_server(ui)
-	volumeId = "d1adaa79-776f-456b-8543-833744d0d282"
-	volume.details(volumeId)
+	volume.list_server_show(ui)
+	
+	#volumeId = "d1adaa79-776f-456b-8543-833744d0d282"
+	#volume.details(volumeId)
 

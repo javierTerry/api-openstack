@@ -45,7 +45,8 @@ class Flavor():
                         	print "Flavor id= {}, name = {},{},{},{}, is_public = {}".format(flavors.id,flavors.name, flavors.ram,flavors.vcpus, flavors.disk, flavors.is_public)
 				#print dir(flavors)
         	except:
-                	print "Unexpected error:", sys.exc_info()[0]
+			"debug"
+                	#print "Unexpected error:", sys.exc_info()[0]
                 	#raise
 
 	
@@ -63,9 +64,9 @@ class Flavor():
 			return nc.flavors.find(id=flavorUuid, is_public=None)
                         #exit()
                 except:
-			#"algo"
+			"debug"
 			#print "algo"
-                        print "{} -> Unexpected error: {}".format(__file__, sys.exc_info())
+                        #iprint "{} -> Unexpected error: {}".format(__file__, sys.exc_info())
                         #raise
 	
 
