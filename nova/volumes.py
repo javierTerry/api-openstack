@@ -25,8 +25,8 @@ class Volume():
     		#cred['service_type'] = "volume"
 		cred['project_id'] = "admin"
     		self.credGlobal = cred
-		cred['service_type'] = "volume"
-		self.credService = cred
+		#cred['service_type'] = "volume"
+		#self.credService = cred
 		
 
 	def update_params_credentials(self,params):
@@ -108,9 +108,9 @@ class Volume():
 
 	def details(self,volumeId):
 		try:
-			#cred = {}
-			#cred['service_type'] = "volume"
-			#self.update_params_credentials(cred)
+			cred = {}
+			cred['service_type'] = "volume"
+			self.update_params_credentials(cred)
 			return self.nova.volumes.get(volumeId)
 		except:
                         print "{} -> Unexpected error: {}".format(__file__, sys.exc_info()[0])

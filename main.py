@@ -16,7 +16,7 @@ noVms = 0
 server = Server()
 
 print credenciales
-print "Tenant, UUID, DESCRIPCION, NOMBRE VM,VM UUID, FLAVOR NAME, FLAVOR RAM (MB), FLAVOR VCPU, FLAVOR DISK (GB), VOLUME (GB), VOLUME NAME, VOLUME UUID "
+print "Tenant, UUID, DESCRIPCION, NOMBRE VM,VM UUID, VM STATUS, FLAVOR NAME, FLAVOR RAM (MB), FLAVOR VCPU, FLAVOR DISK (GB), VOLUME (GB), VOLUME NAME, VOLUME UUID "
 for tenant in tenants:
 	#print ">>>>>>>>>>>>>   CAMBIO DE TENANT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 	cr = {'project_id': utils.utf8(tenant.name)}
@@ -39,18 +39,15 @@ for tenant in tenants:
 			sFlavor = ",,,"
 			if flavorDetails != None:
 				sFlavor =  "{},{},{},{}".format(flavorDetails.name, flavorDetails.ram,flavorDetails.vcpus, flavorDetails.disk)
-			sVolume = ",,"
+			sVolume = ""
 			sVolId = ""
-			for vol in volume.list_server(vm.id):
-				sVolId = "{}|{}".format(vol.id, sVolId)
-				print "Volume id {}".format(vm.id)
-				volDetail = volume.details(vol.id)
-				#sVolume = ",,"
-				#if volDetail != None:
-				#	sVolume = "{},{},{}".format(volDetail.name, volDetail.size, volDetail.id)
-				#print sVolume
-				
-			sCsv = "{},{},{},{},{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.csvCadena(tenant.description),vm.name,vm.id,vm.status,sFlavor,sVolId)
+			for temp in vm._info['os-extended-volumes:volumes_attached']:
+                                volID = temp.values()[0]
+                                volDetail = volume.details(volID)
+                                if volDetail != None:
+                                        sVolume = "{},{},{},{}".format(volDetail.name, volDetail.size, volDetail.id, sVolume)			
+	
+			sCsv = "{},{},{},{},{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.csvCadena(tenant.description),vm.name,vm.id,vm.status,sFlavor,sVolume)
 			print sCsv
 			noVms += 1
 	except:

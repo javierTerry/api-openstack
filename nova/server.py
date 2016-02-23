@@ -61,12 +61,6 @@ class Server():
 					
 		
 	def nova_list_show(self,params):
-			#credentials = self.get_nova_credentials()
-			#print params
-			#cr = credentials.update(params)
-			#print dir(credentials)
-			#print type(icr)
-			#print credentials
 			print "nova list"
 			print self.credGlobal
 			try:
@@ -101,7 +95,7 @@ if __name__ == '__main__':
 	server = Server()
 	#server.nova_list()
         cred = {}
-        cred['project_id'] = "Copiloto Satelital"
+        cred['project_id'] = "Corte Ingles"
 	server.update_params_credentials(cred)
         server.nova_list_show(cred)
 	#print servers
