@@ -1,6 +1,6 @@
 import sys
 import os
-from nova import server, volumes, flavor
+from nova.server import Server
 from nova.volumes import Volume
 from nova.flavor import Flavor
 
@@ -13,6 +13,7 @@ credenciales =  cr.get_credentials()
 #credenciales['project_id']
 
 noVms = 0
+server = Server()
 
 print credenciales
 print "Tenant, UUID, DESCRIPCION, NOMBRE VM,VM UUID, FLAVOR NAME, FLAVOR RAM (MB), FLAVOR VCPU, FLAVOR DISK (GB), VOLUME (GB), VOLUME NAME, VOLUME UUID "
@@ -25,6 +26,7 @@ for tenant in tenants:
 	flavors= Flavor()
 	try:	
 		volume.update_params_credentials(cr)
+		server.update_params_credentials(cr)
 		servers = server.nova_list(cr)
 		for vm in servers:
 			#print ">>>>>>>>>> {}, {} <<<<<<<<<<<<<".format(utils.utf8(vm.name), vm.id)
@@ -35,13 +37,15 @@ for tenant in tenants:
 			flavorDetails= flavors.details(flavorUuid)
 			#print (flavorDetails)
 			sFlavor = ",,,"
-			if flavorDetails is not 'None':
+			if flavorDetails != None:
 				sFlavor =  "{},{},{},{}".format(flavorDetails.name, flavorDetails.ram,flavorDetails.vcpus, flavorDetails.disk)
 			sVolume = ",,"
-			for vol in volume.list_server(vm.id):
-				#sVolume = "{},{},{}".format(volume.size, volume.name, volume.id)
-				volDetail = volume.details(vol.id)
-				sVolume = "{},{},{}".format(volDetail.name, volDetail.size, volDetail.id)
+			#for vol in volume.list_server(vm.id):
+			#	#sVolume = "{},{},{}".format(volume.size, volume.name, volume.id)
+			#	volDetail = volume.details(vol.id)
+			#	sVolume = ",,"
+			#	if volDetail != None:
+			#		sVolume = "{},{},{}".format(volDetail.name, volDetail.size, volDetail.id)
 				#print sVolume
 				
 			sCsv = "{},{},{},{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.csvCadena(tenant.description),vm.name,vm.id,sFlavor,sVolume)
@@ -49,8 +53,9 @@ for tenant in tenants:
 			noVms += 1
 	except:
 		#exit()
+		#raise
 		noVms += 1
-		#print "{} -> Unexpected error: {}".format(__file__,sys.exc_info())
+		print "{} -> Unexpected error: {}".format(__file__,sys.exc_info())
 	#for server in servers:
 	#	print "{},{},{},{}".format(utils.utf8(tenant.name),tenant.id,utils.utf8(tenant.description),server.name)	
 	

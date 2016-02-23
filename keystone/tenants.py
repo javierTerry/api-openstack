@@ -17,10 +17,11 @@ def test():
 
 def tenant_list_show():
 	keystone = ksclient.Client(**cred)
+	print "TENANT , UUID, DESCIPCIONVM "
 	for tenant in keystone.tenants.list():
-        	print " >>>>>>>>>>>>>> TENANT LISTADO <<<<<<<<<<<<<<<<<"
-        	print tenant.name.encode('utf-8').strip()
-		print "TENANT , UUID, DESCIPCIONVM "
+        	#print " >>>>>>>>>>>>>> TENANT LISTADO <<<<<<<<<<<<<<<<<"
+        	#print tenant.name.encode('utf-8').strip()
+		#print "TENANT , UUID, DESCIPCIONVM "
 		print "{}, {}, {}".format(tenant.name.encode('utf-8').strip(),tenant.id,tenant.description.encode('utf-8').strip())
 		#print (tenant.to_dict())
 		#	exit()
@@ -36,6 +37,7 @@ def tenant_list():
 
 
 if __name__ == "__main__":
-	test()
-	#tenant_list_show()
+	#test()
+	
+	tenant_list_show()
 

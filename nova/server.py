@@ -15,114 +15,102 @@ class Foo(object):
     def __init__(self):
         self.name = 1
         self.uuid = 2
-	self.volumens = {}
-    
+        self.volumens = {}
+
     def to_json(self):
         return json.dumps(self.__dict__)
 
-def get_nova_credentials( sType):
-    cred = {}
-    cred['username']   = os.environ['OS_USERNAME']
-    cred['api_key']    = os.environ['OS_PASSWORD']
-    cred['auth_url']   = "http://vrrp:35357/v2.0"#os.environ['OS_AUTH_URL']
-    #cred['project_id'] = "Corte Ingles"#os.environ['OS_PROJECT_NAME']# "IMSS-1" #"UNETE_Op-07678" #"SORIANA_Op-08151"#os.environ['OS_TENANT_NAME']
-    #cred['service_type'] = "volume"
-    return cred
+class Server():
 
+	credGlobal = {}
+	nova = ""
 
-def nova_list_show(params):
-	credentials = get_nova_credentials("")
-	#print params
-	cr = credentials.update(params)
-	#print dir(credentials)
-	#print type(cr)
-	#print credentials
-    	print "nova list"
-	print credentials
-	try:
-	    	nc = nvclient.Client(**credentials)
-		for server in nc.servers.list():
-        		print "VM id= {}, name = {}".format(server.id,server.name)
-	except:
-    		print "Unexpected error:", sys.exc_info()[0]
-    		#raise
-	
-def nova_list(params):
-        credentials = get_nova_credentials("")
-        try:
-		cr = credentials.update(params)
-        	nc = nvclient.Client(**credentials)
-        	return nc.servers.list()
-        except:
-                print "Unexpected error:", sys.exc_info()[0]
-                #raise
+	def __init__(self):
+                self.get_nova_credentials()
+		self.nova =  nvclient.Client(**self.credGlobal)
 
-def main():
-    credentials = get_nova_credentials("")
-    print "main {}".format(credentials)
-    nova_list(credentials)
-    print "fin nova main"
-    exit()
-    #print credentials
-    nc = nvclient.Client(**credentials)
-    #exit();
-    #for volume in nc.volumes.list():
-	#print "Valumen" , repr(volume)
- 	#volume.size
+        def get_nova_credentials(self):
+                cred = {}
+                cred['username']   = os.environ['OS_USERNAME']
+                cred['api_key']    = os.environ['OS_PASSWORD']
+                cred['auth_url']   = "http://vrrp:35357/v2.0"
+                cred['project_id'] = "admin"
+                #cred['tenant_name'] = "admin"
+                #cred['service_tag'] = "compute"
+                self.credGlobal = cred
 
-    #exit();
-    #print nc.flavors.list()
-    #print nc.servers.list()
-    #print nc.volumes.list()
-	#for volume in nc.volumes.get_server_volumes("1af9e615-68c4-48e9-bb8e-1ad8e24ece40"):
-#	 print "Volume in server" , repr(volume) 
-    #f = open('test.json')
-    #data = json.load(f)
-    #f.close()
+        def update_params_credentials(self,params):
+                self.get_nova_credentials()
+                #print self.credGlobal
+                #print params
+                self.credGlobal.update(params)
+		self.nova = nvclient.Client(**self.credGlobal)
+                #print self.credGlobal# =  cred
+                #print cred
+                #print "update {}".format(self.credGlobal)
 
-    
-    for server in nc.servers.list():
-	print "VM id= {}, name = {}".format(server.id,server.name)
-        attach = ""
-	volumensData = []
-	for volume in nc.volumes.get_server_volumes(server.id):
-		volumensData.append(volume.id)
-	
-	#print "VM id= {}, name = {}, attach = {}".format(server.id,server.name,attach)
-	data = []
-	data.append("casa")
-	data.append("casa2")
-	json = Foo()
-	json.name = server.name
-	json.uuid = server.id
-	json.volumens = volumensData
-        print json.volumens
-	print json.to_json()
-#	exit()
+	def show(self,uuid):
+		try:
+			#print "uuid : {}".format(uuid)
+			#print (self.nova.servers.get(uuid))
+			return self.nova.servers.get(uuid)
+			#print (self.nova.servers.find(uuid))
+		except:
+			raise
+			""
+					
+		
+	def nova_list_show(self,params):
+			#credentials = self.get_nova_credentials()
+			#print params
+			#cr = credentials.update(params)
+			#print dir(credentials)
+			#print type(icr)
+			#print credentials
+			print "nova list"
+			print self.credGlobal
+			try:
+					#nc = nvclient.Client(**self.credGlobal)
+					for server in self.nova.servers.list():
+						print "VM id= {}, name = {}".format(server.id,server.name)
+			except:
+					print "Unexpected error:", sys.exc_info()[0]
+					raise
 
-#    for flavor in nc.flavors.list():
-#	print flavor
-#	repr(flavor)
-	#json.dumps(flavor, sort_keys=True, indent=4)
-	#print flavor.ram
+	def nova_list(self,params):
+			#credentials = self.get_nova_credentials()
+			try:
+					#cr = credentials.update(params)
+					#nc = nvclient.Client(**credentials)
+					
+					return self.nova.servers.list()
+			except:
+					print "Unexpected error:", sys.exc_info()[0]
+					#raise
 
-def write(cadena):
-    print('Creating new text file') 
-
-    name = "test.txt" #raw_input('Enter name of text file: ')+'.txt'  # Name of text file coerced with +.txt
-
-    try:
-        file = open(name,'w')   # Trying to create a new file or open one
-        file.write(cadena)
-	file.close()
-
-    except:
-        print('Something went wrong! Can\'t tell what?')
-        sys.exit(0) # quit Python
+	def main(self):
+		credentials = get_nova_credentials("")
+		print "main {}".format(credentials)
+		nova_list(credentials)
+		print "fin nova main"
+		exit()
 
 
 if __name__ == '__main__':
-    	cred = {}
-	cred['project_id'] = "Corte Ingles"
-	nova_list_show(cred)
+	server = Server()
+	#server.nova_list()
+        cred = {}
+        cred['project_id'] = "Copiloto Satelital"
+	server.update_params_credentials(cred)
+        server.nova_list_show(cred)
+	#print servers
+	#server.nova_list_show(cred)
+	#uuid  = "17757484-09a9-4d74-b0e6-dc03b70dfed0"
+	#flavorUuid = "86335b73-1e32-4391-b114-f7b9f22540c1"
+	#vm = server.show(uuid)
+	#print (vm.flavor)
+	#print (vm.flavor.values())
+	#print (vm.flavor.values()[0])
+	#print vm.flavor.find(id=flavorUuid)
+	#print "VM id= {}, name = {}".format(vm.id,vm.name)
 
