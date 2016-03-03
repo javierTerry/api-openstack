@@ -13,13 +13,13 @@ from utils.string import utils
 def detail_all_tenant():
 	tenants = tnt.tenant_list()
 	noVms = 0
-	exit()
+	#exit()
 	server = Server()
 	print "Tenant, UUID, DESCRIPCION, NOMBRE VM,VM UUID, VM STATUS, FLAVOR NAME, FLAVOR RAM (MB), FLAVOR VCPU, FLAVOR DISK (GB), VOLUME (GB), VOLUME NAME, VOLUME UUID "
 	for tenant in tenants:
 			#print ">>>>>>>>>>>>>   CAMBIO DE TENANT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
 			logging.info('Started Tenant')
-			exit()
+			#exit()
 			cr = {'project_id': utils.utf8(tenant.name)}
 			#server.nova_list_show(cr)
 			#exit()
