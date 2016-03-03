@@ -133,8 +133,8 @@ if __name__ == '__main__':
 	#ui = "add9bc78-88d6-4f9d-85ff-2f4532a4c120"
 	#ui = "ca67690f-e5f8-4bcf-9c39-16367962a67b"
 	#volume.list_server_show(ui)
-	volume.list_server_show(ui)
+	#volume.list_server_show(ui)
 	
-	#volumeId = "d1adaa79-776f-456b-8543-833744d0d282"
-	#volume.details(volumeId)
+	volumeId = "016504ad-59bb-4b50-96f1-293b31ac4f42"
+	print dir(volume.details(volumeId))
 
