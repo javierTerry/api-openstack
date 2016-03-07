@@ -35,8 +35,6 @@ class Server():
                 cred['api_key']    = os.environ['OS_PASSWORD']
                 cred['auth_url']   = "http://vrrp:35357/v2.0"
                 cred['project_id'] = "admin"
-                #cred['tenant_name'] = "admin"
-                #cred['service_tag'] = "compute"
                 self.credGlobal = cred
 
         def update_params_credentials(self,params):
@@ -45,14 +43,9 @@ class Server():
                 #print params
                 self.credGlobal.update(params)
 		self.nova = nvclient.Client(**self.credGlobal)
-                #print self.credGlobal# =  cred
-                #print cred
-                #print "update {}".format(self.credGlobal)
 
 	def show(self,uuid):
 		try:
-			#print "uuid : {}".format(uuid)
-			#print (self.nova.servers.get(uuid))
 			return self.nova.servers.get(uuid)
 			#print (self.nova.servers.find(uuid))
 		except:
@@ -65,7 +58,9 @@ class Server():
 			print self.credGlobal
 			try:
 					#nc = nvclient.Client(**self.credGlobal)
-					for server in self.nova.servers.list():
+					#print dir(self.nova.servers.list(detailed=True))
+					#exit()
+					for server in self.nova.servers.list(search_opts={'status':'ACTIVE'}):
 						print dir(server)
 						print "VM id= {}, name = {}, status= {}".format(server.id,server.name, server.status)
 			except:
@@ -78,7 +73,7 @@ class Server():
 					#cr = credentials.update(params)
 					#nc = nvclient.Client(**credentials)
 					
-					return self.nova.servers.list()
+					return self.nova.servers.list(search_opts={'status':'ACTIVE'})
 			except:
 					print "Unexpected error:", sys.exc_info()[0]
 					#raise
