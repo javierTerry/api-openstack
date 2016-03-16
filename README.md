@@ -11,3 +11,8 @@ Example
 |pypi| |unix_build| |windows_build| |coverage| |gitter|
 
 -----
+
+.. contents::
+    :local:
+    :depth: 1
+    :backlinks: none
